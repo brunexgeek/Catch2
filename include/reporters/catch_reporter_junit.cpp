@@ -48,6 +48,15 @@ namespace Catch {
             return std::string(timeStamp);
         }
 
+        std::string classNameTag(const std::vector<std::string> &tags) {
+            auto it = std::find_if(begin(tags),
+                                   end(tags),
+                                   [] (std::string const& tag) {return tag.front() == ':'; });
+            if (it != tags.end())
+                return it->substr(1);
+            return std::string();
+        }
+
         std::string fileNameTag(const std::vector<std::string> &tags) {
             auto it = std::find_if(begin(tags),
                                    end(tags),
@@ -163,6 +172,8 @@ namespace Catch {
 
         if( className.empty() ) {
             className = fileNameTag(stats.testInfo.tags);
+            if ( className.empty() )
+                className = classNameTag(stats.testInfo.tags);
             if ( className.empty() )
                 className = "global";
         }
